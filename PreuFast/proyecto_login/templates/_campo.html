@@ -1,9 +1,7 @@
-#este es el template para renderizar un campo de formulario en Django. 
-#se utiliza para mostrar la etiqueta del campo, el propio campo de entrada, cualquier texto de ayuda asociado y los errores de validación si los hay.
+
 <div class="campo">
-  <label for="{{ campo.id_for_label }}">{{campo.label}}</label>
+  <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
   {{ campo }}
-  {%ifcampo.help_text%}<small>{{campo.help_text|safe}}</small>{%endif%}
-  {%for error in campo.errors%}<p class="error">{{error}}</p>{%endfor%}
+  {% if campo.help_text %}<small>{{campo.help_text|safe}}</small>{% endif %}
+  {% for error in campo.errors %}<p class="error">{{error}}</p>{% endfor %}
 </div>
-#no esta hecho con ia

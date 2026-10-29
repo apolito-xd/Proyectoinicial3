@@ -1,7 +1,6 @@
-##este programa sirve para mostrar mensajes de error o de exito en la pagina web
-## se puede usar para mostrar mensajes de validacion de formularios o para mostrar mensajes de exito al guardar un registro en la base de datos.
-{%if messages%}
+
+{% if messages %}
 <ul class="mensajes" role="status">
-  {%for mensaje in messages%}<li class="{{ mensaje.tags }}">{{mensaje}}</li>{%endfor%}
+  {% for mensaje in messages %}<li class="{{ mensaje.tags }}">{{mensaje}}</li>{% endfor %}
 </ul>
-{%endif%}
+{% endif %}
