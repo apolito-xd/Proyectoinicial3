@@ -1,0 +1,16 @@
+{% extends "cuentas/interior.html" %}
+{% block titulo %}Configuración · Mi aplicación{% endblock %}
+{% block contenido %}
+<h1>Configuración</h1>
+<h2>Cambiar contraseña</h2>
+<form method="post" class="formulario-interno" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+  <div class="alerta" role="alert">{% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}</div>
+  {% endif %}
+  {% include "_campo.html" with campo=form.old_password %}
+  {% include "_campo.html" with campo=form.new_password1 %}
+  {% include "_campo.html" with campo=form.new_password2 %}
+  <button class="boton" type="submit">Cambiar contraseña</button>
+</form>
+{% endblock %}

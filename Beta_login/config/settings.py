@@ -63,10 +63,12 @@ TIME_ZONE = "America/Santiago"
 USE_I18N = True
 USE_TZ = True
 
+# Archivos estáticos (CSS, PDF de la sección Materiales, etc.)
 STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Inicio de sesión
 LOGIN_URL = "cuentas:login"
-LOGIN_REDIRECT_URL = "cuentas:menu"
+LOGIN_REDIRECT_URL = "cuentas:inicio"
 LOGOUT_REDIRECT_URL = "cuentas:login"

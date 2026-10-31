@@ -28,3 +28,21 @@ class FormularioRegistro(UserCreationForm):
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("Ya existe una cuenta con este correo.")
         return email
+
+
+class FormularioPerfil(forms.ModelForm):
+    """Edición de los datos básicos del usuario."""
+
+    email = forms.EmailField(label="Correo electrónico")
+
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email")
+        labels = {"first_name": "Nombre", "last_name": "Apellido"}
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        otros = User.objects.filter(email__iexact=email).exclude(pk=self.instance.pk)
+        if otros.exists():
+            raise forms.ValidationError("Ya existe otra cuenta con este correo.")
+        return email

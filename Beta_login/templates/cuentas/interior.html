@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block cuerpo %}
+<header class="barra">
+  <strong class="nombre">Mi aplicación</strong>
+  <nav class="menu-principal" aria-label="Menú principal">
+    {% with actual=request.resolver_match.url_name %}
+    <a href="{% url 'cuentas:inicio' %}"{% if actual == 'inicio' %} class="activo" aria-current="page"{% endif %}>Inicio</a>
+    <a href="{% url 'cuentas:materiales' %}"{% if actual == 'materiales' %} class="activo" aria-current="page"{% endif %}>Materiales</a>
+    <a href="{% url 'cuentas:practica' %}"{% if actual == 'practica' %} class="activo" aria-current="page"{% endif %}>Práctica</a>
+    <a href="{% url 'cuentas:fechas' %}"{% if actual == 'fechas' %} class="activo" aria-current="page"{% endif %}>Fechas</a>
+    <a href="{% url 'cuentas:creditos' %}"{% if actual == 'creditos' %} class="activo" aria-current="page"{% endif %}>Créditos</a>
+    {% endwith %}
+  </nav>
+  <div class="usuario">
+    <a href="{% url 'cuentas:perfil' %}">{{ user.username }}</a>
+    <form method="post" action="{% url 'cuentas:logout' %}">
+      {% csrf_token %}
+      <button class="boton boton-sec" type="submit">Cerrar sesión</button>
+    </form>
+  </div>
+</header>
+<main class="contenido">
+  {% include "_mensajes.html" %}
+  {% block contenido %}{% endblock %}
+</main>
+{% endblock %}

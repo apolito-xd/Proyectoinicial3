@@ -1,4 +1,4 @@
-# Inicio de sesión con Django
+# Inicio de sesión con Django (versión sin humanizar)
 
 1. Crear entorno e instalar:
    python -m venv venv
@@ -11,4 +11,5 @@
 4. Iniciar el servidor y abrir http://127.0.0.1:8000/
    python manage.py runserver
 
-Rutas: /ingresar/ · /registro/ · /registro/listo/ (confirmación) · /menu/ (protegida) · /salir/ (POST) · /admin/
+Rutas: /ingresar/ · /registro/ · /registro/listo/ · /inicio/ · /materiales/ · /practica/ ·
+/fechas/ · /creditos/ · /perfil/ · /configuracion/ · /salir/ (POST) · /admin/
