@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "cuentas"
+    'cuentas',
+    'material'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,5 @@ MAILERS = {
 LOGIN_URL = "cuentas:login"
 LOGIN_REDIRECT_URL = "cuentas:inicio"
 LOGOUT_REDIRECT_URL = "cuentas:login"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
