@@ -1,6 +1,6 @@
 {% extends "cuentas/acceso.html" %}
-{% block titulo %}Iniciar sesión · Mi aplicación{% endblock %}
-{% block titular %}Entra para continuar donde lo dejaste.{% endblock %}
+{% block titulo %}Iniciar sesión · Preu-Fast{% endblock %}
+{% block titular %}Bienvenido a Preu-Fast. Crea una cuenta o inicia secion para continuar donde lo dejaste.{% endblock %}
 {% block formulario %}
 <h2>Iniciar sesión</h2>
 {% include "_mensajes.html" %}
@@ -14,5 +14,5 @@
   {% include "_campo.html" with campo=form.password %}
   <button class="boton" type="submit">Iniciar sesión</button>
 </form>
-<p class="alterno">¿No tienes cuenta? <a href="{% url 'cuentas:registro' %}">Crear una cuenta</a></p>
+<p class="alterno">¿No tienes cuenta? <a href="{% url 'cuentas:registro' %}">Crea una cuenta</a></p>
 {% endblock %}

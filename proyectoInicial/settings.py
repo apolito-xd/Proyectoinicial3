@@ -116,6 +116,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
 # Email
@@ -127,5 +128,5 @@ MAILERS = {
     },
 }
 LOGIN_URL = "cuentas:login"
-LOGIN_REDIRECT_URL = "cuentas:menu"
+LOGIN_REDIRECT_URL = "cuentas:inicio"
 LOGOUT_REDIRECT_URL = "cuentas:login"

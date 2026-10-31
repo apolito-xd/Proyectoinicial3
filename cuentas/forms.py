@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class FormularioIngreso(AuthenticationForm):
-    """Formulario de inicio de sesión de Django, con etiquetas en español."""
+    """inicio de secion en django"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,4 +27,22 @@ class FormularioRegistro(UserCreationForm):
         email = self.cleaned_data["email"].strip().lower()
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("Ya existe una cuenta con este correo.")
+        return email
+
+
+class FormularioPerfil(forms.ModelForm):
+    """se editan los datos de usuario"""
+
+    email = forms.EmailField(label="Correo electrónico")
+
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email")
+        labels = {"first_name": "Nombre", "last_name": "Apellido"}
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        otros = User.objects.filter(email__iexact=email).exclude(pk=self.instance.pk)
+        if otros.exists():
+            raise forms.ValidationError("Ya existe otra cuenta con este correo.")
         return email
