@@ -1,0 +1,18 @@
+{% extends "cuentas/acceso.html" %}
+{% block titulo %}Crear cuenta · Mi aplicación{% endblock %}
+{% block titular %}Crea tu cuenta en un minuto.{% endblock %}
+{% block formulario %}
+<h2>Crear cuenta</h2>
+{% if form.non_field_errors %}
+<div class="alerta" role="alert">{% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}</div>
+{% endif %}
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% include "_campo.html" with campo=form.username %}
+  {% include "_campo.html" with campo=form.email %}
+  {% include "_campo.html" with campo=form.password1 %}
+  {% include "_campo.html" with campo=form.password2 %}
+  <button class="boton" type="submit">Crear cuenta</button>
+</form>
+<p class="alterno">¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}">Iniciar sesión</a></p>
+{% endblock %}
