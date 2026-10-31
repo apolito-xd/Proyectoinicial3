@@ -3,10 +3,25 @@
 {% block contenido %}
 <h1>Materiales</h1>
 <p>Archivos y recursos de apoyo.</p>
+
+
+<p>
+  <a href="{% url 'material:lista' %}">Todas</a>
+  {% for codigo, nombre in materias %}
+    | <a href="?materia={{ codigo }}">{{ nombre }}</a>
+  {% endfor %}
+</p>
+
 <ul class="opciones">
-  <li><a href="#"><strong>Material 1</strong><span>Descripción breve del material</span></a></li>
-  <li><a href="#"><strong>Material 2</strong><span>Descripción breve del material</span></a></li>
-  <li><a href="#"><strong>Material 3</strong><span>Descripción breve del material</span></a></li>
+  {% for m in materiales %}
+  <li>
+    <a href="{% url 'material:descargar' m.pk %}">
+      <strong>{{ m.titulo }}</strong>
+      <span>{{ m.get_materia_display }}{% if m.descripcion %} · {{ m.descripcion }}{% endif %}</span>
+    </a>
+  </li>
+  {% empty %}
+  <li><span>Todavía no hay material en esta categoría.</span></li>
+  {% endfor %}
 </ul>
-<p class="nota">aqui se ve lo de la descarga de archivos</p>
 {% endblock %}
