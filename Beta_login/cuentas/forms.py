@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class FormularioIngreso(AuthenticationForm):
-    """Formulario de inicio de sesión de Django, con etiquetas en español."""
+    """inicio de secion en django"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,7 +31,7 @@ class FormularioRegistro(UserCreationForm):
 
 
 class FormularioPerfil(forms.ModelForm):
-    """Edición de los datos básicos del usuario."""
+    """se editan los datos de usuario"""
 
     email = forms.EmailField(label="Correo electrónico")
 
