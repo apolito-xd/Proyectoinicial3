@@ -1,8 +1,8 @@
 {% extends "cuentas/interior.html" %}
-{% block titulo %}Configuración · Mi aplicación{% endblock %}
+{% block titulo %}Configuración · Preu-Fast{% endblock %}
 {% block contenido %}
 <h1>Configuración</h1>
-<h2>Cambiar contraseña</h2>
+<h2>¿Desea Cambiar la Contraseña?</h2>
 <form method="post" class="formulario-interno" novalidate>
   {% csrf_token %}
   {% if form.non_field_errors %}

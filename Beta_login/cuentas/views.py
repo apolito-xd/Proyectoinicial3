@@ -8,7 +8,7 @@ from .forms import FormularioIngreso, FormularioPerfil, FormularioRegistro
 
 
 class IngresarView(LoginView):
-    """Inicio de sesión. Al terminar, envía a Inicio (LOGIN_REDIRECT_URL)."""
+    """inicio de secio, cuando termina te redirige al registro"""
     template_name = "cuentas/login.html"
     authentication_form = FormularioIngreso
     redirect_authenticated_user = True
@@ -32,14 +32,11 @@ def registro(request):
 
 
 def registro_exitoso(request):
-    """Confirmación de cuenta creada, con enlace para iniciar sesión."""
+    """se confirma la creacion de la cuenta y tiene link para inicio de secion"""
     username = request.session.get("usuario_creado")
     if not username:
         return redirect("cuentas:registro")
     return render(request, "cuentas/registro_exitoso.html", {"username": username})
-
-
-# ---------- Secciones del menú principal ----------
 
 @login_required
 def inicio(request):
@@ -65,9 +62,6 @@ def fechas(request):
 def creditos(request):
     return render(request, "cuentas/creditos.html")
 
-
-# ---------- Cuenta del usuario ----------
-
 @login_required
 def perfil(request):
     """Ver y editar los datos de la cuenta."""
@@ -84,7 +78,7 @@ def perfil(request):
 
 
 class CambiarClaveView(PasswordChangeView):
-    """Cambio de contraseña (Django mantiene la sesión abierta)."""
+    """SE cambia la contraseña y la secion sigue abierta"""
     template_name = "cuentas/configuracion.html"
     success_url = reverse_lazy("cuentas:configuracion")
 

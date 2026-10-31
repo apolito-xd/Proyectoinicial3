@@ -1,10 +1,8 @@
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Cambia esta clave y pon DEBUG = False antes de publicar el sitio.
-SECRET_KEY = "cambia-esta-clave-antes-de-publicar"
-DEBUG = True
+SECRET_KEY = "PReu-Fast clave"
+DEBUG = False
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [

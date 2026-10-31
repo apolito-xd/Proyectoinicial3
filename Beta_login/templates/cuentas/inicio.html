@@ -1,13 +1,7 @@
 {% extends "cuentas/interior.html" %}
-{% block titulo %}Inicio · Mi aplicación{% endblock %}
+{% block titulo %}Inicio · Preu-Fast{% endblock %}
 {% block contenido %}
 <h1>Inicio</h1>
 <p>Hola, {{ user.first_name|default:user.username }}. Iniciaste sesión correctamente.</p>
-<p>Escribe aquí una breve descripción de tu página.</p>
-<ul class="opciones">
-  <li><a href="{% url 'cuentas:materiales' %}"><strong>Materiales</strong><span>Documentos y recursos de apoyo</span></a></li>
-  <li><a href="{% url 'cuentas:practica' %}"><strong>Práctica</strong><span>Ejercicios para aplicar lo aprendido</span></a></li>
-  <li><a href="{% url 'cuentas:fechas' %}"><strong>Fechas</strong><span>Calendario de entregas y actividades</span></a></li>
-  <li><a href="{% url 'cuentas:creditos' %}"><strong>Créditos</strong><span>Quiénes hicieron este proyecto</span></a></li>
-</ul>
+<p>Bienvenido a Preu-Fast!!</p>
 {% endblock %}
