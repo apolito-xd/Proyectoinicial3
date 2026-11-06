@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,6 +129,25 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+DEFAULT_FROM_EMAIL = 'Preu-Fast <no-responder@preu-fast.local>'
+
+# Para enviar correos de verdad (en vez de imprimirlos en la terminal), define las
+# variables de entorno EMAIL_HOST_USER y EMAIL_HOST_PASSWORD antes de iniciar el servidor.
+# No escribas la contraseña aquí: este archivo se sube a GitHub.
+if os.environ.get('EMAIL_HOST_USER'):
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+            'OPTIONS': {
+                'host': 'smtp.gmail.com',
+                'use_tls': True,
+                'username': os.environ['EMAIL_HOST_USER'],
+                'password': os.environ.get('EMAIL_HOST_PASSWORD', ''),
+            },
+        },
+    }
+    DEFAULT_FROM_EMAIL = 'Preu-Fast <' + os.environ['EMAIL_HOST_USER'] + '>'
+
 LOGIN_URL = "cuentas:login"
 LOGIN_REDIRECT_URL = "cuentas:inicio"
 LOGOUT_REDIRECT_URL = "cuentas:login"

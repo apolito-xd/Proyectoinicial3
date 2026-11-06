@@ -1,11 +1,14 @@
 {% extends "cuentas/acceso.html" %}
-{% block titulo %}Cuenta creada · Preu-Fast{% endblock %}
-{% block titular %}Tu cuenta está lista.{% endblock %}
+{% block titulo %}Revisa tu correo · Preu-Fast{% endblock %}
+{% block titular %}
+Un último paso para activar tu cuenta.
+{% endblock %}
 {% block formulario %}
-<h2>Cuenta creada</h2>
+<h2>Revisa tu correo</h2>
 <div class="alerta-ok" role="status">
-  <p>La cuenta <strong>{{ username }}</strong> se creó correctamente.</p>
+  <p>Creamos la cuenta <strong>{{ username }}</strong>. Te enviamos un correo a <strong>{{ correo }}</strong>.</p>
 </div>
-<p>Ahora inicia sesión con tu usuario y contraseña para entrar.</p>
+<p>Abre el enlace del mensaje para activarla. Si no lo ves, revisa la carpeta de spam.</p>
+<p>Después de activarla, inicia sesión con tu usuario y contraseña.</p>
 <a class="boton" href="{% url 'cuentas:login' %}">Ir a iniciar sesión</a>
 {% endblock %}

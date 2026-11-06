@@ -1,0 +1,8 @@
+{% autoescape off %}Hola {{ usuario.username }},
+
+Para activar tu cuenta en Preu-Fast abre este enlace:
+
+{{ enlace }}
+
+Si tú no creaste esta cuenta, ignora este mensaje.
+{% endautoescape %}

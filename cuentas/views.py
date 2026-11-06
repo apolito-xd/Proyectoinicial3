@@ -1,10 +1,22 @@
+import logging
+from smtplib import SMTPException
+
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.core.mail import send_mail
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.template.loader import render_to_string
+from django.urls import reverse, reverse_lazy
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from .forms import FormularioIngreso, FormularioPerfil, FormularioRegistro
+
+User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 class IngresarView(LoginView):
@@ -14,6 +26,15 @@ class IngresarView(LoginView):
     redirect_authenticated_user = True
 
 
+def enviar_correo_activacion(request, usuario):
+    """Manda al correo del usuario el enlace para activar su cuenta."""
+    uid = urlsafe_base64_encode(force_bytes(usuario.pk))
+    token = default_token_generator.make_token(usuario)
+    enlace = request.build_absolute_uri(reverse("cuentas:activar", args=[uid, token]))
+    mensaje = render_to_string("cuentas/correo_activacion.txt", {"usuario": usuario, "enlace": enlace})
+    send_mail("Confirma tu cuenta en Preu-Fast", mensaje, None, [usuario.email])
+
+
 def registro(request):
     if request.user.is_authenticated:
         return redirect("cuentas:inicio")
@@ -21,10 +42,19 @@ def registro(request):
     if request.method == "POST":
         form = FormularioRegistro(request.POST)
         if form.is_valid():
-            usuario = form.save()
-            # Se guarda el nombre para mostrarlo en la página de confirmación.
-            request.session["usuario_creado"] = usuario.username
-            return redirect("cuentas:registro_exitoso")
+            usuario = form.save(commit=False)
+            usuario.is_active = False  # se activa al abrir el enlace del correo
+            usuario.save()
+            try:
+                enviar_correo_activacion(request, usuario)
+            except (SMTPException, OSError):
+                logger.exception("No se pudo enviar el correo de activación")
+                usuario.delete()
+                form.add_error("email", "No pudimos enviar el correo de confirmación. Revisa la dirección e inténtalo de nuevo.")
+            else:
+                request.session["usuario_creado"] = usuario.username
+                request.session["correo_creado"] = usuario.email
+                return redirect("cuentas:registro_exitoso")
     else:
         form = FormularioRegistro()
 
@@ -36,7 +66,23 @@ def registro_exitoso(request):
     username = request.session.get("usuario_creado")
     if not username:
         return redirect("cuentas:registro")
-    return render(request, "cuentas/registro_exitoso.html", {"username": username})
+    contexto = {"username": username, "correo": request.session.get("correo_creado")}
+    return render(request, "cuentas/registro_exitoso.html", contexto)
+
+
+def activar(request, uidb64, token):
+    """Abre el enlace del correo: si es válido, deja la cuenta activa."""
+    try:
+        usuario = User.objects.get(pk=urlsafe_base64_decode(uidb64).decode())
+    except (ValueError, TypeError, OverflowError, User.DoesNotExist):
+        usuario = None
+
+    valido = usuario is not None and default_token_generator.check_token(usuario, token)
+    if valido:
+        usuario.is_active = True
+        usuario.save()
+    return render(request, "cuentas/activacion.html", {"valido": valido})
+
 
 @login_required
 def inicio(request):

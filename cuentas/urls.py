@@ -12,6 +12,7 @@ urlpatterns = [
     path("salir/", LogoutView.as_view(), name="logout"),
     path("registro/", views.registro, name="registro"),
     path("registro/listo/", views.registro_exitoso, name="registro_exitoso"),
+    path("activar/<uidb64>/<token>/", views.activar, name="activar"),
 
     # Menú principal
     path("inicio/", views.inicio, name="inicio"),

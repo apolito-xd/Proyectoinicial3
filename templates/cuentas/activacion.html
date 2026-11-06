@@ -1,0 +1,24 @@
+{% extends "cuentas/acceso.html" %}
+{% block titulo %}Activar cuenta · Preu-Fast{% endblock %}
+{% block titular %}
+{% if valido %}
+Tu cuenta quedó activada.
+{% else %}
+Este enlace no sirve.
+{% endif %}
+{% endblock %}
+{% block formulario %}
+{% if valido %}
+<h2>Cuenta activada</h2>
+<div class="alerta-ok" role="status">
+  <p>Confirmamos tu correo. Ya puedes iniciar sesión.</p>
+</div>
+<a class="boton" href="{% url 'cuentas:login' %}">Ir a iniciar sesión</a>
+{% else %}
+<h2>Enlace no válido</h2>
+<div class="alerta" role="alert">
+  <p>El enlace es incorrecto o ya venció.</p>
+</div>
+<a class="boton" href="{% url 'cuentas:registro' %}">Crear la cuenta de nuevo</a>
+{% endif %}
+{% endblock %}

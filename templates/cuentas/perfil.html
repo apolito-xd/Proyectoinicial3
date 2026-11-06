@@ -5,6 +5,8 @@
 <dl class="datos">
   <dt>Usuario</dt>
   <dd>{{ user.username }}</dd>
+  <dt>Correo</dt>
+  <dd>{{ user.email }}</dd>
   <dt>Cuenta creada</dt>
   <dd>{{ user.date_joined|date:"d/m/Y" }}</dd>
 </dl>
@@ -12,7 +14,6 @@
   {% csrf_token %}
   {% include "_campo.html" with campo=form.first_name %}
   {% include "_campo.html" with campo=form.last_name %}
-  {% include "_campo.html" with campo=form.email %}
   <button class="boton" type="submit">Guardar cambios</button>
 </form>
 <p class="alterno"><a href="{% url 'cuentas:configuracion' %}">¿Desea Cambiar la contraseña?, Click aquí</a></p>
