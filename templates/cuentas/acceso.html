@@ -1,8 +1,16 @@
 {% extends "base.html" %}
+{% load static %}
 {% block cuerpo %}
 <div class="acceso">
   <aside class="marca">
-    <span class="nombre">Preu-Fast</span>
+    <div class="marca-titulo">
+      <svg class="marca-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>
+      <span class="marca-texto"><span class="t-blanco">Preu</span><span class="t-amarillo">-</span><span class="t-celeste">Fast</span></span>
+    </div>
+    <div class="marca-centro">
+      {# Logo: reemplaza el texto del div por una etiqueta img con la ruta del logo #}
+      <div class="marca-logo">Espacio para el logo</div>
+    </div>
     <h1>{% block titular %}{% endblock %}</h1>
   </aside>
   <section class="formulario">
