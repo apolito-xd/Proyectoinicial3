@@ -1,0 +1,26 @@
+{% extends "cuentas/interior.html" %}
+{% block titulo %}Resultado · Preu-Fast{% endblock %}
+{% block contenido %}
+<h1>Resultado: {{ puntaje }} / {{ total }}</h1>
+<p>{{ ensayo.titulo }}</p>
+
+{% for r in revision %}
+<div>
+  <p><strong>{{ forloop.counter }}. {{ r.pregunta.enunciado }}</strong></p>
+  {% if r.acierto %}
+    <p>✅ Correcto (alternativa {{ r.elegida }})</p>
+  {% else %}
+    <p>❌ Elegiste {{ r.elegida }}. La correcta era {{ r.pregunta.correcta }}.</p>
+  {% endif %}
+  {% if r.pregunta.explicacion %}
+    <p><em>{{ r.pregunta.explicacion }}</em></p>
+  {% endif %}
+</div>
+<hr>
+{% endfor %}
+
+<p>
+  <a href="{% url 'practica:ensayo' ensayo.pk %}">Repetir ensayo</a> |
+  <a href="{% url 'practica:lista' %}">Volver a Práctica</a>
+</p>
+{% endblock %}

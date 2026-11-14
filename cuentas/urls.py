@@ -16,7 +16,6 @@ urlpatterns = [
     # Menú principal
     path("inicio/", views.inicio, name="inicio"),
     path("materiales/", views.materiales, name="materiales"),
-    path("practica/", views.practica, name="practica"),
     path("fechas/", views.fechas, name="fechas"),
     path("creditos/", views.creditos, name="creditos"),
 
