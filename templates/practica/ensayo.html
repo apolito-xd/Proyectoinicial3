@@ -1,0 +1,27 @@
+{% extends "cuentas/interior.html" %}
+{% block titulo %}{{ ensayo.titulo }} · Preu-Fast{% endblock %}
+{% block contenido %}
+<h1>{{ ensayo.titulo }}</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {% for p in preguntas %}
+  <div>
+    <p><strong>{{ forloop.counter }}. {{ p.enunciado }}</strong></p>
+    {% for letra, texto in p.opciones %}
+    <label>
+      <input type="radio" name="p{{ p.pk }}" value="{{ letra }}" required>
+      {{ letra }}) {{ texto }}
+    </label><br>
+    {% endfor %}
+  </div>
+  <hr>
+  {% empty %}
+  <p>Este ensayo todavía no tiene preguntas.</p>
+  {% endfor %}
+
+  {% if preguntas %}
+  <button type="submit">Terminar y ver resultado</button>
+  {% endif %}
+</form>
+{% endblock %}

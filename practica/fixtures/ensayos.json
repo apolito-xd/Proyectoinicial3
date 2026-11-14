@@ -1,0 +1,39 @@
+[
+  {
+    "model": "practica.ensayo",
+    "pk": 1,
+    "fields": {
+      "titulo": "Diagnóstico Matemática M1",
+      "materia": "m1",
+      "descripcion": "Álgebra y números básicos"
+    }
+  },
+  {
+    "model": "practica.pregunta",
+    "pk": 1,
+    "fields": {
+      "ensayo": 1,
+      "enunciado": "¿Cuál es el valor de x en 2x + 6 = 14?",
+      "alt_a": "2",
+      "alt_b": "4",
+      "alt_c": "6",
+      "alt_d": "10",
+      "correcta": "B",
+      "explicacion": "Restas 6 a ambos lados: 2x = 8. Luego divides por 2: x = 4."
+    }
+  },
+  {
+    "model": "practica.pregunta",
+    "pk": 2,
+    "fields": {
+      "ensayo": 1,
+      "enunciado": "¿Cuánto es el 25% de 80?",
+      "alt_a": "10",
+      "alt_b": "15",
+      "alt_c": "20",
+      "alt_d": "25",
+      "correcta": "C",
+      "explicacion": "25% es una cuarta parte: 80 ÷ 4 = 20."
+    }
+  }
+]

@@ -48,10 +48,6 @@ def materiales(request):
     return render(request, "cuentas/materiales.html")
 
 
-@login_required
-def practica(request):
-    return render(request, "cuentas/practica.html")
-
 
 @login_required
 def fechas(request):

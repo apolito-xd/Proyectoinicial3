@@ -2,11 +2,25 @@
 {% block titulo %}Práctica · Preu-Fast{% endblock %}
 {% block contenido %}
 <h1>Práctica</h1>
-<p>Ejercicios para aplicar lo aprendido.</p>
-<ol>
-  <li><strong>Ejercicio 1.</strong> Descripción del ejercicio.</li>
-  <li><strong>Ejercicio 2.</strong> Descripción del ejercicio.</li>
-  <li><strong>Ejercicio 3.</strong> Descripción del ejercicio.</li>
-</ol>
-<p class="nota">hay que hacer la aplicación de los ejercicios</p>
+<p>Ensayos de diagnóstico para medir tu nivel.</p>
+
+<p>
+  <a href="{% url 'practica:lista' %}">Todas</a>
+  {% for codigo, nombre in materias %}
+    | <a href="?materia={{ codigo }}">{{ nombre }}</a>
+  {% endfor %}
+</p>
+
+<ul class="opciones">
+  {% for e in ensayos %}
+  <li>
+    <a href="{% url 'practica:ensayo' e.pk %}">
+      <strong>{{ e.titulo }}</strong>
+      <span>{{ e.get_materia_display }}{% if e.descripcion %} · {{ e.descripcion }}{% endif %}</span>
+    </a>
+  </li>
+  {% empty %}
+  <li><span>No hay ensayos en esta categoría.</span></li>
+  {% endfor %}
+</ul>
 {% endblock %}
