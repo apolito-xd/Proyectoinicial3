@@ -1,17 +1,131 @@
 {% extends "cuentas/interior.html" %}
 {% block titulo %}Fechas · Preu-Fast{% endblock %}
 {% block contenido %}
-<h1>Fechas</h1>
-<p>Calendario de Fechas importantes y actividades.</p>
-<div class="tabla">
-  <table>
-    <tr>
-      <th>Actividad</th>
-      <th>Fecha</th>
-      <th>Detalle</th>
-    </tr>
+<h1 class="titulo-pagina">
+  <svg class="titulo-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>Fechas
+</h1>
+<p class="subtitulo-pagina">Calendario de <mark>Fechas importantes</mark> y actividades.</p>
 
-  </table>
+<div class="fechas">
+
+  {# Para cambiar la fecha de la cuenta regresiva, edita data-objetivo (año-mes-día T hora -03:00) y el texto de la fecha #}
+  <div class="evento evento-verano">
+    <button class="evento-boton" type="button" id="boton-verano" aria-expanded="false" aria-controls="panel-verano">
+      <span>PAES Verano</span>
+    </button>
+    <div class="evento-panel" id="panel-verano" role="region" aria-labelledby="boton-verano">
+      <div class="evento-panel-int">
+        <div class="evento-contenido">
+          <div class="evento-info">
+            <p class="evento-fecha">30 de Noviembre de 2026, 15:00 Hrs</p>
+            <p class="evento-detalle">(primera prueba PAES M2)</p>
+          </div>
+          <div class="cuenta" role="timer" aria-label="Tiempo que falta para la primera prueba PAES M2"
+            data-objetivo="2026-11-30T15:00:00-03:00">
+            <div class="cuenta-bloque"><span class="cuenta-num" data-unidad="dias">--</span><span class="cuenta-etq">Días</span></div>
+            <div class="cuenta-bloque"><span class="cuenta-num" data-unidad="horas">--</span><span class="cuenta-etq">Horas</span></div>
+            <div class="cuenta-bloque"><span class="cuenta-num" data-unidad="minutos">--</span><span class="cuenta-etq">Min</span></div>
+            <div class="cuenta-bloque"><span class="cuenta-num" data-unidad="segundos">--</span><span class="cuenta-etq">Seg</span></div>
+          </div>
+          <p class="cuenta-fin" hidden>¡Llegó el día!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evento evento-invierno">
+    <button class="evento-boton" type="button" id="boton-invierno" aria-expanded="false" aria-controls="panel-invierno">
+      <span>PAES Invierno</span>
+    </button>
+    <div class="evento-panel" id="panel-invierno" role="region" aria-labelledby="boton-invierno">
+      <div class="evento-panel-int">
+        <div class="evento-contenido">
+          <p class="evento-aviso">Por Confirmar! <span>No tan Rápido!</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
-<p class="nota">hay que hacerlo interactivo</p>
+
+<noscript>
+  <style>
+    .evento-panel { grid-template-rows: 1fr; opacity: 1; visibility: visible; margin-top: .6rem; }
+  </style>
+</noscript>
+
+<script>
+  (function () {
+    var eventos = document.querySelectorAll('.evento');
+    var cuenta = document.querySelector('.cuenta');
+    var fin = document.querySelector('.cuenta-fin');
+    var objetivo = cuenta ? new Date(cuenta.getAttribute('data-objetivo')).getTime() : NaN;
+    var temporizador = null;
+
+    function dos(n) {
+      return n < 10 ? '0' + n : String(n);
+    }
+
+    function poner(unidad, valor) {
+      var el = cuenta.querySelector('[data-unidad="' + unidad + '"]');
+      if (el && el.textContent !== valor) el.textContent = valor;
+    }
+
+    function actualizar() {
+      var resto = objetivo - Date.now();
+      if (resto <= 0) {
+        cuenta.hidden = true;
+        fin.hidden = false;
+        return false;
+      }
+      var s = Math.floor(resto / 1000);
+      poner('dias', dos(Math.floor(s / 86400)));
+      poner('horas', dos(Math.floor((s % 86400) / 3600)));
+      poner('minutos', dos(Math.floor((s % 3600) / 60)));
+      poner('segundos', dos(s % 60));
+      return true;
+    }
+
+    // Se actualiza justo al cambiar cada segundo, sin acumular desfase
+    function siguiente() {
+      temporizador = setTimeout(function () {
+        if (actualizar()) siguiente();
+      }, 1000 - (Date.now() % 1000));
+    }
+
+    function iniciar() {
+      detener();
+      if (isNaN(objetivo)) return;
+      if (actualizar()) siguiente();
+    }
+
+    function detener() {
+      clearTimeout(temporizador);
+      temporizador = null;
+    }
+
+    function verano() {
+      return document.querySelector('.evento-verano');
+    }
+
+    eventos.forEach(function (evento) {
+      var boton = evento.querySelector('.evento-boton');
+      boton.addEventListener('click', function () {
+        var abierto = evento.classList.toggle('abierto');
+        boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+        if (evento === verano()) {
+          if (abierto) iniciar();
+          else detener();
+        }
+      });
+    });
+
+    // No gasta recursos si la pestaña del navegador no se ve
+    document.addEventListener('visibilitychange', function () {
+      if (!cuenta || !verano().classList.contains('abierto')) return;
+      if (document.hidden) detener();
+      else iniciar();
+    });
+  })();
+</script>
 {% endblock %}

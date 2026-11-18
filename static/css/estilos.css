@@ -551,3 +551,364 @@ th {
     margin-bottom: .8rem;
   }
 }
+
+/* Fechas: botones desplegables y cuenta regresiva */
+.fechas,
+.titulo-pagina,
+.subtitulo-pagina {
+  /* Cambia los colores de la página de fechas desde acá */
+  --verano-1: #ff5e62;
+  --verano-2: #ffb347;
+  --invierno-1: #3ec6ff;
+  --invierno-2: #8b7bff;
+  /* Título: acero suave */
+  --metal-titanio: linear-gradient(180deg, #2f3a47 0%, #55657a 45%, #7d8da1 50%, #3f4c5c 100%);
+  --violeta: #6d4aff;
+}
+
+.fechas {
+  display: grid;
+  gap: 1.1rem;
+  margin-top: 1.5rem;
+}
+
+.fechas [hidden] {
+  display: none !important;
+}
+
+/* Colores propios de cada evento */
+.evento-verano {
+  --ev-1: var(--verano-1);
+  --ev-2: var(--verano-2);
+  --ev-num: var(--amarillo);
+}
+
+.evento-invierno {
+  --ev-1: var(--invierno-1);
+  --ev-2: var(--invierno-2);
+  --ev-num: var(--celeste);
+}
+
+.evento-boton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: var(--blanco);
+  background: linear-gradient(110deg, var(--ev-1), var(--ev-2));
+  text-shadow: 0 1px 3px rgba(11, 31, 77, .35);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(11, 31, 77, .18), 0 10px 22px rgba(11, 31, 77, .14);
+  transition: filter .15s, transform .15s, box-shadow .15s;
+}
+
+.evento-boton:hover {
+  filter: brightness(1.07) saturate(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 rgba(11, 31, 77, .18), 0 14px 26px rgba(11, 31, 77, .18);
+}
+
+.evento-boton:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(11, 31, 77, .18), 0 4px 10px rgba(11, 31, 77, .14);
+}
+
+.evento-boton:focus-visible {
+  outline: 3px solid var(--marino);
+  outline-offset: 3px;
+}
+
+/* Flechita que gira al abrir */
+.evento-boton::after {
+  content: "";
+  flex: none;
+  width: .6rem;
+  height: .6rem;
+  border-right: 3px solid currentColor;
+  border-bottom: 3px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform .25s;
+}
+
+.evento.abierto .evento-boton::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+/* Pestaña que se abre debajo del botón */
+.evento-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  margin-top: 0;
+  transition: grid-template-rows .3s ease, opacity .25s ease, margin-top .3s ease, visibility 0s .3s;
+}
+
+.evento.abierto .evento-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  margin-top: .8rem;
+  transition: grid-template-rows .3s ease, opacity .25s ease, margin-top .3s ease, visibility 0s;
+}
+
+.evento-panel-int {
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.evento-contenido {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--blanco);
+  border: 2px solid transparent;
+  border-radius: 20px;
+  background-image:
+    linear-gradient(var(--blanco), var(--blanco)),
+    linear-gradient(110deg, var(--ev-1), var(--ev-2));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 10px 24px rgba(11, 31, 77, .12);
+}
+
+/* Fecha y detalle: el detalle se estira al mismo largo de la fecha */
+.evento-info {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  width: max-content;
+  max-width: 100%;
+}
+
+.evento-fecha {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.25;
+  white-space: nowrap;
+  color: var(--marino);
+}
+
+.evento-detalle {
+  margin: 0;
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-align: justify;
+  text-align-last: justify;
+  color: var(--suave);
+}
+
+/* Cuenta regresiva */
+.cuenta {
+  display: flex;
+  gap: .5rem;
+}
+
+.cuenta-bloque {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3.6rem;
+  padding: .5rem .4rem .4rem;
+  background: var(--marino);
+  color: var(--blanco);
+  border-bottom: 4px solid var(--ev-num);
+  border-radius: 12px;
+}
+
+.cuenta-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ev-num);
+  font-variant-numeric: tabular-nums;
+}
+
+.cuenta-etq {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.cuenta-fin {
+  margin: 0;
+  padding: .6rem 1.1rem;
+  font-weight: 800;
+  background: var(--marino);
+  color: var(--ev-num);
+  border-radius: 999px;
+}
+
+/* Mensaje de "Por confirmar" */
+.evento-aviso {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--marino);
+}
+
+.evento-aviso span {
+  font-weight: 600;
+  color: var(--suave);
+}
+
+@media (max-width: 600px) {
+  .evento-fecha {
+    white-space: normal;
+  }
+
+  .evento-detalle {
+    text-align-last: left;
+  }
+
+  .cuenta {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cuenta-bloque {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evento-panel,
+  .evento.abierto .evento-panel,
+  .evento-boton,
+  .evento-boton::after {
+    transition: none;
+  }
+}
+
+/* Fechas: título y subtítulo decorativos */
+@font-face {
+  font-family: "Lilita One";
+  src: url("../fonts/lilita-one-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fredoka";
+  src: url("../fonts/fredoka-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.contenido .titulo-pagina {
+  display: block;
+  margin: 0 0 1.1rem;
+  font-family: "Lilita One", "Trebuchet MS", "Segoe UI", sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.1rem, 6.5vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: .01em;
+  /* Texto con degradé */
+  color: #3f4c5c;
+  background: var(--metal-titanio);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(11, 31, 77, .15));
+  animation: entrada .5s ease-out both;
+}
+
+.titulo-rayo {
+  display: inline-block;
+  height: .85em;
+  width: auto;
+  margin-right: .38em;
+  vertical-align: -.04em;
+  fill: var(--amarillo);
+  stroke: var(--marino);
+  stroke-width: 4;
+  stroke-linejoin: round;
+  transform: rotate(8deg);
+  transform-origin: 50% 60%;
+  animation: zap .8s .4s ease-out;
+}
+
+.titulo-pagina:hover .titulo-rayo {
+  animation: zap .6s ease-out;
+}
+
+.contenido .subtitulo-pagina {
+  margin: 0 0 1.75rem;
+  padding: .15rem 0 .15rem 1rem;
+  font-family: "Fredoka", "Trebuchet MS", "Segoe UI", sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.15rem, 3.8vw, 1.5rem);
+  line-height: 1.45;
+  color: var(--suave);
+  border-left: 5px solid var(--violeta);
+  animation: entrada .5s .12s ease-out both;
+}
+
+/* Resaltado tipo marcador */
+.subtitulo-pagina mark {
+  padding: 0 .3em;
+  font-weight: 700;
+  color: var(--marino);
+  background: linear-gradient(transparent 55%, rgba(62, 198, 255, .55) 55%, rgba(139, 123, 255, .45) 95%, transparent 95%);
+  border-radius: .2em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+@keyframes entrada {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes zap {
+  0%,
+  100% {
+    transform: rotate(8deg) scale(1);
+  }
+
+  25% {
+    transform: rotate(-8deg) scale(1.2);
+  }
+
+  50% {
+    transform: rotate(14deg) scale(1.1);
+  }
+
+  75% {
+    transform: rotate(-3deg) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contenido .titulo-pagina,
+  .contenido .subtitulo-pagina,
+  .titulo-rayo,
+  .titulo-pagina:hover .titulo-rayo {
+    animation: none;
+  }
+}
