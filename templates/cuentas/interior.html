@@ -1,16 +1,21 @@
 {% extends "base.html" %}
 {% block cuerpo %}
 <header class="barra">
-  <strong class="nombre">Preu-Fast</strong>
+  <a class="nombre" href="{% url 'cuentas:inicio' %}">
+    <svg class="barra-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>
+    <span><span class="t-blanco">Preu</span><span class="t-amarillo">-</span><span class="t-celeste">Fast</span></span>
+  </a>
+
   <nav class="menu-principal" aria-label="Menú principal">
-    {% with actual=request.resolver_match.url_name %}
-    <a href="{% url 'cuentas:inicio' %}" {% if actual == 'inicio' %} class="activo" aria-current="page" {% endif %}>Inicio</a>
-    <a href="{% url 'material:lista' %}" {% if actual == 'materiales' %} class="activo" aria-current="page" {% endif %}>Materiales</a>
-    <a href="{% url 'practica:lista' %}" {% if actual == 'practica' %} class="activo" aria-current="page" {% endif %}>Práctica</a>
-    <a href="{% url 'cuentas:fechas' %}" {% if actual == 'fechas' %} class="activo" aria-current="page" {% endif %}>Fechas</a>
-    <a href="{% url 'cuentas:creditos' %}" {% if actual == 'creditos' %} class="activo" aria-current="page" {% endif %}>Créditos</a>
+    {% with app=request.resolver_match.app_name actual=request.resolver_match.url_name %}
+    <a href="{% url 'cuentas:inicio' %}" {% if app == 'cuentas' and actual == 'inicio' %}class="activo" aria-current="page"{% endif %}>Inicio</a>
+    <a href="{% url 'material:lista' %}" {% if app == 'material' %}class="activo" aria-current="page"{% endif %}>Materiales</a>
+    <a href="{% url 'practica:lista' %}" {% if app == 'practica' %}class="activo" aria-current="page"{% endif %}>Práctica</a>
+    <a href="{% url 'cuentas:fechas' %}" {% if app == 'cuentas' and actual == 'fechas' %}class="activo" aria-current="page"{% endif %}>Fechas</a>
+    <a href="{% url 'cuentas:creditos' %}" {% if app == 'cuentas' and actual == 'creditos' %}class="activo" aria-current="page"{% endif %}>Créditos</a>
     {% endwith %}
   </nav>
+
   <div class="usuario">
     <a href="{% url 'cuentas:perfil' %}">{{ user.username }}</a>
     <form method="post" action="{% url 'cuentas:logout' %}">
@@ -19,6 +24,7 @@
     </form>
   </div>
 </header>
+
 <main class="contenido">
   {% include "_mensajes.html" %}
   {% block contenido %}{% endblock %}

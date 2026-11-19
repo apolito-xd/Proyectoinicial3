@@ -1,26 +1,27 @@
 {% extends "cuentas/interior.html" %}
 {% block titulo %}Resultado · Preu-Fast{% endblock %}
 {% block contenido %}
-<h1>Resultado: {{ puntaje }} / {{ total }}</h1>
-<p>{{ ensayo.titulo }}</p>
+<h1 class="titulo-pagina">
+  <svg class="titulo-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>Resultado: {{ puntaje }} / {{ total }}
+</h1>
+<p class="subtitulo-pagina">Revisión detallada de <mark>{{ ensayo.titulo }}</mark>.</p>
 
 {% for r in revision %}
-<div>
-  <p><strong>{{ forloop.counter }}. {{ r.pregunta.enunciado }}</strong></p>
+<div class="pregunta-card">
+  <p class="pregunta-enunciado">{{ forloop.counter }}. {{ r.pregunta.enunciado }}</p>
   {% if r.acierto %}
-    <p>✅ Correcto (alternativa {{ r.elegida }})</p>
+    <p class="alerta-ok">✅ Correcto (alternativa {{ r.elegida }})</p>
   {% else %}
-    <p>❌ Elegiste {{ r.elegida }}. La correcta era {{ r.pregunta.correcta }}.</p>
+    <p class="alerta">❌ Elegiste {{ r.elegida }}. La correcta era {{ r.pregunta.correcta }}.</p>
   {% endif %}
   {% if r.pregunta.explicacion %}
     <p><em>{{ r.pregunta.explicacion }}</em></p>
   {% endif %}
 </div>
-<hr>
 {% endfor %}
 
-<p>
-  <a href="{% url 'practica:ensayo' ensayo.pk %}">Repetir ensayo</a> |
-  <a href="{% url 'practica:lista' %}">Volver a Práctica</a>
-</p>
+<div class="acciones-fila">
+  <a class="boton-pill" href="{% url 'practica:ensayo' ensayo.pk %}">Repetir ensayo</a>
+  <a class="boton-pill boton-pill-sec" href="{% url 'practica:lista' %}">Volver a Práctica</a>
+</div>
 {% endblock %}

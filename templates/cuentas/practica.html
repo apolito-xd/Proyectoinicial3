@@ -1,26 +1,33 @@
 {% extends "cuentas/interior.html" %}
 {% block titulo %}Práctica · Preu-Fast{% endblock %}
 {% block contenido %}
-<h1>Práctica</h1>
-<p>Ensayos de diagnóstico para medir tu nivel.</p>
+<h1 class="titulo-pagina">
+  <svg class="titulo-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>Práctica
+</h1>
+<p class="subtitulo-pagina">Ensayos de <mark>diagnóstico</mark> para medir tu nivel.</p>
 
-<p>
-  <a href="{% url 'practica:lista' %}">Todas</a>
+<nav class="filtros-materia" aria-label="Filtrar ensayos por materia">
+  <a class="filtro-pill {% if not request.GET.materia %}activo{% endif %}" href="{% url 'practica:lista' %}">Todas</a>
   {% for codigo, nombre in materias %}
-    | <a href="?materia={{ codigo }}">{{ nombre }}</a>
+    <a class="filtro-pill {% if request.GET.materia == codigo %}activo{% endif %}" href="?materia={{ codigo }}">{{ nombre }}</a>
   {% endfor %}
-</p>
+</nav>
 
-<ul class="opciones">
+<ul class="lista-tarjetas">
   {% for e in ensayos %}
   <li>
-    <a href="{% url 'practica:ensayo' e.pk %}">
-      <strong>{{ e.titulo }}</strong>
-      <span>{{ e.get_materia_display }}{% if e.descripcion %} · {{ e.descripcion }}{% endif %}</span>
+    <a class="tarjeta-enlace" href="{% url 'practica:ensayo' e.pk %}">
+      <div class="tarjeta-enlace-info">
+        <strong>{{ e.titulo }}</strong>
+        <span>{{ e.get_materia_display }}{% if e.descripcion %} · {{ e.descripcion }}{% endif %}</span>
+      </div>
+      <span class="badge-accion">Comenzar</span>
     </a>
   </li>
   {% empty %}
-  <li><span>No hay ensayos en esta categoría.</span></li>
+  <li class="tarjeta-pf">
+    <p>No hay ensayos en esta categoría.</p>
+  </li>
   {% endfor %}
 </ul>
 {% endblock %}

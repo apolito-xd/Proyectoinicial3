@@ -4,13 +4,11 @@
 <h1 class="titulo-pagina">
   <svg class="titulo-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>Fechas
 </h1>
-<p class="subtitulo-pagina">Calendario de <mark>Fechas importantes</mark> y actividades.</p>
+<p class="subtitulo-pagina">Calendario de <mark>Fechas importantes</mark> y tus notas personales de estudio.</p>
 
 <div class="fechas">
-
-  {# Para cambiar la fecha de la cuenta regresiva, edita data-objetivo (año-mes-día T hora -03:00) y el texto de la fecha #}
-  <div class="evento evento-verano">
-    <button class="evento-boton" type="button" id="boton-verano" aria-expanded="false" aria-controls="panel-verano">
+  <div class="evento evento-verano abierto">
+    <button class="evento-boton" type="button" id="boton-verano" aria-expanded="true" aria-controls="panel-verano">
       <span>PAES Verano</span>
     </button>
     <div class="evento-panel" id="panel-verano" role="region" aria-labelledby="boton-verano">
@@ -32,39 +30,62 @@
       </div>
     </div>
   </div>
+</div>
 
-  <div class="evento evento-invierno">
-    <button class="evento-boton" type="button" id="boton-invierno" aria-expanded="false" aria-controls="panel-invierno">
-      <span>PAES Invierno</span>
-    </button>
-    <div class="evento-panel" id="panel-invierno" role="region" aria-labelledby="boton-invierno">
-      <div class="evento-panel-int">
-        <div class="evento-contenido">
-          <p class="evento-aviso">Por Confirmar! <span>No tan Rápido!</span></p>
-        </div>
-      </div>
+<section class="calendario-seccion" aria-label="Calendario interactivo anual">
+  <div class="calendario-cabecera">
+    <h2>Calendario Interactivo</h2>
+    <div class="calendario-controles">
+      <button type="button" class="cal-nav-btn" id="cal-prev-mes" aria-label="Mes anterior">◀</button>
+      <span class="cal-mes-titulo" id="cal-titulo-mes">Noviembre 2026</span>
+      <button type="button" class="cal-nav-btn" id="cal-next-mes" aria-label="Mes siguiente">▶</button>
+      <button type="button" class="cal-nav-btn destacado" id="cal-ir-paes">Ir a PAES Verano</button>
     </div>
   </div>
 
-</div>
+  <div class="cal-meses-strip" id="cal-strip-meses" aria-label="Selector rápido de meses"></div>
 
-<noscript>
-  <style>
-    .evento-panel { grid-template-rows: 1fr; opacity: 1; visibility: visible; margin-top: .6rem; }
-  </style>
-</noscript>
+  <div class="calendario-layout">
+    <div class="cal-grid-card">
+      <div class="cal-dias-semana">
+        <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+      </div>
+      <div class="cal-dias-grid" id="cal-grid"></div>
+      <div class="cal-leyenda">
+        <span><i class="cal-punto-fija"></i> Fecha oficial (no editable)</span>
+        <span><i class="cal-punto-nota"></i> Nota personal</span>
+      </div>
+    </div>
+
+    <aside class="cal-detalle-card" aria-live="polite">
+      <h3 id="cal-dia-titulo">Selecciona un día</h3>
+      <div id="cal-lista-eventos"></div>
+
+      <form class="cal-form-nota" id="cal-form-nota">
+        {% csrf_token %}
+        <h4 id="cal-form-subtitulo">Agregar nota en este día</h4>
+        <input type="hidden" id="nota-id" value="">
+        <input type="text" id="nota-titulo" maxlength="120" placeholder="Título (ej: Repasar Álgebra M2)" required>
+        <textarea id="nota-contenido" maxlength="1000" rows="3" placeholder="Escribe detalles o recordatorios para este día..."></textarea>
+        <div class="nota-acciones">
+          <button type="submit" class="btn-mini">Guardar nota</button>
+          <button type="button" class="btn-mini sec" id="nota-cancelar-edicion" hidden>Cancelar edición</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</section>
 
 <script>
   (function () {
+    // 1. Cuenta regresiva PAES Verano
     var eventos = document.querySelectorAll('.evento');
     var cuenta = document.querySelector('.cuenta');
     var fin = document.querySelector('.cuenta-fin');
     var objetivo = cuenta ? new Date(cuenta.getAttribute('data-objetivo')).getTime() : NaN;
     var temporizador = null;
 
-    function dos(n) {
-      return n < 10 ? '0' + n : String(n);
-    }
+    function dos(n) { return n < 10 ? '0' + n : String(n); }
 
     function poner(unidad, valor) {
       var el = cuenta.querySelector('[data-unidad="' + unidad + '"]');
@@ -86,7 +107,6 @@
       return true;
     }
 
-    // Se actualiza justo al cambiar cada segundo, sin acumular desfase
     function siguiente() {
       temporizador = setTimeout(function () {
         if (actualizar()) siguiente();
@@ -94,18 +114,9 @@
     }
 
     function iniciar() {
-      detener();
-      if (isNaN(objetivo)) return;
-      if (actualizar()) siguiente();
-    }
-
-    function detener() {
       clearTimeout(temporizador);
       temporizador = null;
-    }
-
-    function verano() {
-      return document.querySelector('.evento-verano');
+      if (!isNaN(objetivo) && actualizar()) siguiente();
     }
 
     eventos.forEach(function (evento) {
@@ -113,19 +124,277 @@
       boton.addEventListener('click', function () {
         var abierto = evento.classList.toggle('abierto');
         boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-        if (evento === verano()) {
-          if (abierto) iniciar();
-          else detener();
-        }
+        if (abierto) iniciar();
+        else { clearTimeout(temporizador); temporizador = null; }
       });
     });
 
-    // No gasta recursos si la pestaña del navegador no se ve
-    document.addEventListener('visibilitychange', function () {
-      if (!cuenta || !verano().classList.contains('abierto')) return;
-      if (document.hidden) detener();
-      else iniciar();
+    iniciar();
+
+    // 2. Calendario interactivo conectado a Django
+    var MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    var MESES_CORTO = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    var URL_EVENTOS = '{% url "cuentas:api_calendario_eventos" %}';
+    var URL_GUARDAR = '{% url "cuentas:api_calendario_guardar_nota" %}';
+    var URL_ELIMINAR_BASE = '{% url "cuentas:api_calendario_eliminar_nota" 0 %}';
+
+    var hoy = new Date();
+    var anioActual = hoy.getFullYear();
+    var mesActual = hoy.getMonth();
+    var fechaSeleccionada = anioActual + '-' + dos(mesActual + 1) + '-' + dos(hoy.getDate());
+    var eventosCache = { fijas: [], notas: [] };
+    var anioCargado = null;
+
+    var gridEl = document.getElementById('cal-grid');
+    var tituloMesEl = document.getElementById('cal-titulo-mes');
+    var stripEl = document.getElementById('cal-strip-meses');
+    var diaTituloEl = document.getElementById('cal-dia-titulo');
+    var listaEventosEl = document.getElementById('cal-lista-eventos');
+    var formEl = document.getElementById('cal-form-nota');
+    var formSubtituloEl = document.getElementById('cal-form-subtitulo');
+    var notaIdInput = document.getElementById('nota-id');
+    var notaTituloInput = document.getElementById('nota-titulo');
+    var notaContenidoInput = document.getElementById('nota-contenido');
+    var btnCancelarEdicion = document.getElementById('nota-cancelar-edicion');
+
+    function getCSRF() {
+      var input = formEl.querySelector('input[name="csrfmiddlewaretoken"]');
+      return input ? input.value : '';
+    }
+
+    function urlGoogleCalendar(titulo, fechaISO, descripcion) {
+      var ymd = fechaISO.replace(/-/g, '');
+      var d = new Date(fechaISO + 'T00:00:00');
+      d.setDate(d.getDate() + 1);
+      var ymdNext = d.getFullYear() + dos(d.getMonth() + 1) + dos(d.getDate());
+      var params = new URLSearchParams({
+        action: 'TEMPLATE',
+        text: titulo + ' · Preu-Fast',
+        dates: ymd + '/' + ymdNext,
+        details: descripcion || 'Recordatorio desde Preu-Fast'
+      });
+      return 'https://calendar.google.com/calendar/render?' + params.toString();
+    }
+
+    function limpiarFormulario() {
+      notaIdInput.value = '';
+      notaTituloInput.value = '';
+      notaContenidoInput.value = '';
+      formSubtituloEl.textContent = 'Agregar nota en este día';
+      btnCancelarEdicion.hidden = true;
+    }
+
+    function renderStripMeses() {
+      stripEl.innerHTML = '';
+      MESES_CORTO.forEach(function (nombre, idx) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cal-mes-chip' + (idx === mesActual ? ' activo' : '');
+        btn.textContent = nombre;
+        btn.addEventListener('click', function () {
+          mesActual = idx;
+          renderCalendario();
+        });
+        stripEl.appendChild(btn);
+      });
+    }
+
+    function renderDetalleDia() {
+      var partes = fechaSeleccionada.split('-');
+      diaTituloEl.textContent = parseInt(partes[2], 10) + ' de ' + MESES[parseInt(partes[1], 10) - 1] + ' de ' + partes[0];
+      listaEventosEl.innerHTML = '';
+
+      var fijasDia = eventosCache.fijas.filter(function (f) { return f.fecha === fechaSeleccionada; });
+      var notasDia = eventosCache.notas.filter(function (n) { return n.fecha === fechaSeleccionada; });
+
+      fijasDia.forEach(function (f) {
+        var card = document.createElement('div');
+        card.className = 'nota-item fija';
+        card.innerHTML =
+          '<div class="nota-item-top">' +
+            '<strong>' + escaparHTML(f.titulo) + '</strong>' +
+            '<span class="badge-candado">Oficial · No editable</span>' +
+          '</div>' +
+          '<p>' + escaparHTML(f.contenido) + '</p>' +
+          '<div class="nota-acciones">' +
+            '<a class="btn-mini sec" target="_blank" rel="noopener" href="' + urlGoogleCalendar(f.titulo, f.fecha, f.contenido) + '">Agendar en Google Calendar</a>' +
+          '</div>';
+        listaEventosEl.appendChild(card);
+      });
+
+      notasDia.forEach(function (n) {
+        var card = document.createElement('div');
+        card.className = 'nota-item';
+        card.innerHTML =
+          '<div class="nota-item-top"><strong>' + escaparHTML(n.titulo) + '</strong></div>' +
+          (n.contenido ? '<p>' + escaparHTML(n.contenido) + '</p>' : '') +
+          '<div class="nota-acciones">' +
+            '<button type="button" class="btn-mini" data-editar="' + n.id + '">Editar</button>' +
+            '<button type="button" class="btn-mini peligro" data-eliminar="' + n.id + '">Eliminar</button>' +
+            '<a class="btn-mini sec" target="_blank" rel="noopener" href="' + urlGoogleCalendar(n.titulo, n.fecha, n.contenido) + '">Google Calendar</a>' +
+          '</div>';
+
+        card.querySelector('[data-editar]').addEventListener('click', function () {
+          notaIdInput.value = n.id;
+          notaTituloInput.value = n.titulo;
+          notaContenidoInput.value = n.contenido || '';
+          formSubtituloEl.textContent = 'Editando nota seleccionada';
+          btnCancelarEdicion.hidden = false;
+          notaTituloInput.focus();
+        });
+
+        card.querySelector('[data-eliminar]').addEventListener('click', function () {
+          var urlEliminar = URL_ELIMINAR_BASE.replace('/0/', '/' + n.id + '/');
+          fetch(urlEliminar, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRF() }
+          }).then(function (r) {
+            if (r.ok) {
+              eventosCache.notas = eventosCache.notas.filter(function (item) { return item.id !== n.id; });
+              limpiarFormulario();
+              renderCalendario();
+            } else {
+              alert('No se pudo eliminar la nota. Intenta nuevamente.');
+            }
+          });
+        });
+
+        listaEventosEl.appendChild(card);
+      });
+
+      if (!fijasDia.length && !notasDia.length) {
+        var vacio = document.createElement('p');
+        vacio.className = 'nota';
+        vacio.textContent = 'Sin eventos ni notas en esta fecha. Agrega tu propio recordatorio abajo.';
+        listaEventosEl.appendChild(vacio);
+      }
+    }
+
+    function escaparHTML(txt) {
+      var div = document.createElement('div');
+      div.textContent = txt;
+      return div.innerHTML;
+    }
+
+    function renderGrid() {
+      tituloMesEl.textContent = MESES[mesActual] + ' ' + anioActual;
+      renderStripMeses();
+      gridEl.innerHTML = '';
+
+      var primerDia = new Date(anioActual, mesActual, 1);
+      var offsetLunes = (primerDia.getDay() + 6) % 7;
+      var totalDias = new Date(anioActual, mesActual + 1, 0).getDate();
+      var hoyISO = hoy.getFullYear() + '-' + dos(hoy.getMonth() + 1) + '-' + dos(hoy.getDate());
+
+      for (var i = 0; i < offsetLunes; i++) {
+        var vacia = document.createElement('div');
+        vacia.className = 'cal-celda vacia';
+        gridEl.appendChild(vacia);
+      }
+
+      for (var d = 1; d <= totalDias; d++) {
+        var iso = anioActual + '-' + dos(mesActual + 1) + '-' + dos(d);
+        var tieneFija = eventosCache.fijas.some(function (f) { return f.fecha === iso; });
+        var tieneNota = eventosCache.notas.some(function (n) { return n.fecha === iso; });
+
+        var celda = document.createElement('button');
+        celda.type = 'button';
+        celda.className = 'cal-celda' +
+          (iso === hoyISO ? ' hoy' : '') +
+          (iso === fechaSeleccionada ? ' seleccionado' : '') +
+          (tieneFija ? ' tiene-fija' : '');
+
+        var puntosHTML = '<span class="cal-puntos">' +
+          (tieneFija ? '<i class="cal-punto-fija"></i>' : '') +
+          (tieneNota ? '<i class="cal-punto-nota"></i>' : '') +
+          '</span>';
+
+        celda.innerHTML = '<span>' + d + '</span>' + puntosHTML;
+        celda.addEventListener('click', (function (fechaClick) {
+          return function () {
+            fechaSeleccionada = fechaClick;
+            limpiarFormulario();
+            renderGrid();
+            renderDetalleDia();
+          };
+        })(iso));
+
+        gridEl.appendChild(celda);
+      }
+
+      renderDetalleDia();
+    }
+
+    function renderCalendario() {
+      if (anioCargado === anioActual) {
+        renderGrid();
+        return;
+      }
+      fetch(URL_EVENTOS + '?year=' + anioActual)
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          anioCargado = data.year;
+          eventosCache.fijas = data.fijas || [];
+          eventosCache.notas = data.notas || [];
+          renderGrid();
+        });
+    }
+
+    document.getElementById('cal-prev-mes').addEventListener('click', function () {
+      mesActual--;
+      if (mesActual < 0) { mesActual = 11; anioActual--; }
+      renderCalendario();
     });
+
+    document.getElementById('cal-next-mes').addEventListener('click', function () {
+      mesActual++;
+      if (mesActual > 11) { mesActual = 0; anioActual++; }
+      renderCalendario();
+    });
+
+    document.getElementById('cal-ir-paes').addEventListener('click', function () {
+      anioActual = 2026;
+      mesActual = 10; // Noviembre (0-indexado)
+      fechaSeleccionada = '2026-11-30';
+      limpiarFormulario();
+      renderCalendario();
+    });
+
+    btnCancelarEdicion.addEventListener('click', limpiarFormulario);
+
+    formEl.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var payload = {
+        id: notaIdInput.value ? parseInt(notaIdInput.value, 10) : null,
+        fecha: fechaSeleccionada,
+        titulo: notaTituloInput.value,
+        contenido: notaContenidoInput.value
+      };
+
+      fetch(URL_GUARDAR, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRF()
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+        .then(function (res) {
+          if (!res.ok) {
+            alert(res.data.error || 'No se pudo guardar la nota.');
+            return;
+          }
+          var guardada = res.data.nota;
+          var idx = eventosCache.notas.findIndex(function (n) { return n.id === guardada.id; });
+          if (idx >= 0) eventosCache.notas[idx] = guardada;
+          else eventosCache.notas.push(guardada);
+          limpiarFormulario();
+          renderCalendario();
+        });
+    });
+
+    renderCalendario();
   })();
 </script>
 {% endblock %}

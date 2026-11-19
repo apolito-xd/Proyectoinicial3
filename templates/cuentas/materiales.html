@@ -1,27 +1,33 @@
 {% extends "cuentas/interior.html" %}
 {% block titulo %}Materiales · Preu-Fast{% endblock %}
 {% block contenido %}
-<h1>Materiales</h1>
-<p>Archivos y recursos de apoyo.</p>
+<h1 class="titulo-pagina">
+  <svg class="titulo-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>Materiales
+</h1>
+<p class="subtitulo-pagina">Archivos y <mark>recursos de apoyo</mark> para tu estudio.</p>
 
-
-<p>
-  <a href="{% url 'material:lista' %}">Todas</a>
+<nav class="filtros-materia" aria-label="Filtrar materiales por materia">
+  <a class="filtro-pill {% if not materia_actual %}activo{% endif %}" href="{% url 'material:lista' %}">Todas</a>
   {% for codigo, nombre in materias %}
-    | <a href="?materia={{ codigo }}">{{ nombre }}</a>
+    <a class="filtro-pill {% if materia_actual == codigo %}activo{% endif %}" href="?materia={{ codigo }}">{{ nombre }}</a>
   {% endfor %}
-</p>
+</nav>
 
-<ul class="opciones">
+<ul class="lista-tarjetas">
   {% for m in materiales %}
   <li>
-    <a href="{% url 'material:descargar' m.pk %}">
-      <strong>{{ m.titulo }}</strong>
-      <span>{{ m.get_materia_display }}{% if m.descripcion %} · {{ m.descripcion }}{% endif %}</span>
+    <a class="tarjeta-enlace" href="{% url 'material:descargar' m.pk %}">
+      <div class="tarjeta-enlace-info">
+        <strong>{{ m.titulo }}</strong>
+        <span>{{ m.get_materia_display }}{% if m.descripcion %} · {{ m.descripcion }}{% endif %}</span>
+      </div>
+      <span class="badge-accion">Descargar PDF</span>
     </a>
   </li>
   {% empty %}
-  <li><span>Todavía no hay material en esta categoría.</span></li>
+  <li class="tarjeta-pf">
+    <p>Todavía no hay material en esta categoría.</p>
+  </li>
   {% endfor %}
 </ul>
 {% endblock %}

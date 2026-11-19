@@ -1,7 +1,32 @@
 {% extends "cuentas/interior.html" %}
 {% block titulo %}Inicio · Preu-Fast{% endblock %}
 {% block contenido %}
-<h1>Inicio</h1>
-<p>Hola, {{ user.first_name|default:user.username }}. Iniciaste sesión correctamente.</p>
-<p>Bienvenido a Preu-Fast!!</p>
+<h1 class="titulo-pagina">
+  <svg class="titulo-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>Inicio
+</h1>
+<p class="subtitulo-pagina">Hola, <mark>{{ user.first_name|default:user.username }}</mark>. Iniciaste sesión correctamente.</p>
+
+<div class="tarjeta-pf">
+  <h2>Bienvenido a Preu-Fast!!</h2>
+  <p>Desde aquí puedes acceder rápidamente a tus guías de estudio, ensayos PAES, calendario interactivo y notas personales.</p>
+</div>
+
+<div class="grid-accesos">
+  <a class="acceso-card" href="{% url 'material:lista' %}">
+    <strong>Materiales</strong>
+    <span>Descarga guías y recursos PDF por materia.</span>
+  </a>
+  <a class="acceso-card" href="{% url 'practica:lista' %}">
+    <strong>Práctica</strong>
+    <span>Resuelve ensayos de diagnóstico y revisa tus resultados.</span>
+  </a>
+  <a class="acceso-card" href="{% url 'cuentas:fechas' %}">
+    <strong>Fechas</strong>
+    <span>Cuenta regresiva PAES Verano y calendario con notas.</span>
+  </a>
+  <a class="acceso-card" href="{% url 'cuentas:creditos' %}">
+    <strong>Créditos</strong>
+    <span>Conoce al equipo y las herramientas del proyecto.</span>
+  </a>
+</div>
 {% endblock %}

@@ -1,9 +1,10 @@
+import os
+
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
 
 from .models import Material
-
 
 
 @login_required
@@ -20,12 +21,20 @@ def lista(request):
     })
 
 
-
 @login_required
-def descargar(request,pk):
+def descargar(request, pk):
     material = get_object_or_404(Material, pk=pk)
+    if not material.archivo:
+        raise Http404("El archivo PDF no se encuentra disponible.")
+
+    try:
+        archivo_abierto = material.archivo.open("rb")
+    except (FileNotFoundError, OSError):
+        raise Http404("El archivo PDF no se encuentra disponible en el servidor.")
+
     return FileResponse(
-        material.archivo.open("rb"),
+        archivo_abierto,
         as_attachment=True,
-        filename=material.archivo.name.split("/")[-1],
+        content_type="application/pdf",
+        filename=os.path.basename(material.archivo.name),
     )

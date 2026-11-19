@@ -15,9 +15,14 @@ urlpatterns = [
 
     # Menú principal
     path("inicio/", views.inicio, name="inicio"),
-    path("materiales/", views.materiales, name="materiales"),
+    path("materiales/", RedirectView.as_view(pattern_name="material:lista"), name="materiales"),
     path("fechas/", views.fechas, name="fechas"),
     path("creditos/", views.creditos, name="creditos"),
+
+    # API JSON del calendario interactivo
+    path("fechas/api/eventos/", views.api_calendario_eventos, name="api_calendario_eventos"),
+    path("fechas/api/notas/", views.api_calendario_guardar_nota, name="api_calendario_guardar_nota"),
+    path("fechas/api/notas/<int:pk>/eliminar/", views.api_calendario_eliminar_nota, name="api_calendario_eliminar_nota"),
 
     # Cuenta
     path("perfil/", views.perfil, name="perfil"),

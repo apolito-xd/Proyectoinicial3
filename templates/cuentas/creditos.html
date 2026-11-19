@@ -1,21 +1,31 @@
 {% extends "cuentas/interior.html" %}
 {% block titulo %}Créditos · Preu-Fast{% endblock %}
 {% block contenido %}
-<h1>Créditos</h1>
+<h1 class="titulo-pagina">
+  <svg class="titulo-rayo" viewBox="0 0 58 102" aria-hidden="true"><path d="M34 1 L3 53 H25 L11 101 L56 38 H32 L48 1 Z"/></svg>Créditos
+</h1>
+<p class="subtitulo-pagina">Equipo y <mark>herramientas</mark> detrás de Preu-Fast.</p>
 
-<h2>Integrantes</h2>
-<ul>
-  <li>Andrés Blanco</li>
-  <li>Martín Ávila</li>
-  <li>Lucciano Avellino</li>
-  <li>Constanza Armijo</li>
-</ul>
+<div class="grid-creditos">
+  <section class="tarjeta-pf">
+    <h2>Integrantes</h2>
+    <ul class="lista-integrantes">
+      <li>Andrés Blanco</li>
+      <li>Martín Ávila</li>
+      <li>Lucciano Avellino</li>
+      <li>Constanza Armijo</li>
+    </ul>
+  </section>
 
-<h2>Profesores</h2>
-<p>...</p>
+  <section class="tarjeta-pf">
+    <h2>Profesores</h2>
+    <p>...</p>
+  </section>
 
-<h2>Herramientas</h2>
-<p>Hecho con Python, HTML y Django.</p>
-
-<p class="nota">{% now "Y" %}</p>
+  <section class="tarjeta-pf">
+    <h2>Herramientas</h2>
+    <p>Hecho con Python, HTML y Django.</p>
+    <p class="nota">{% now "Y" %}</p>
+  </section>
+</div>
 {% endblock %}
